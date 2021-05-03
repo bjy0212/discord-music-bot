@@ -36,6 +36,18 @@ client.on('message', async (message) => {
     let r;
 
     switch (command) {
+        case 'join':
+        case 'j':
+        case '돌아와':
+        case '들어와':
+        case '와':
+            await dj.join(message).then(r => {
+                
+            }).catch(e => {
+
+            });
+            break;
+
         case '재생':
         case 'p':
         case 'play':

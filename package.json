@@ -6,7 +6,7 @@
     "scripts": {
         "start": "node bot >log.txt",
         "debug": "node bot",
-        "setup-termux": "pkg update -y && pkg upgrade -y && pkg install -y nodejs python ffmpeg && npm install && echo \"TOKEN=\nCOMMANDPREFIX=\">.env"
+        "setup-termux": "pkg update -y && pkg upgrade -y && pkg install -y nodejs python ffmpeg && npm install && echo \"TOKEN=\nCOMMANDPREFIX=\">.env && echo \"setup is done! change .env file to you own settings\""
     },
     "keywords": [],
     "author": "",
