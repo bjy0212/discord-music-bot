@@ -44,6 +44,14 @@ async function newMusic(text) {
 
 /**음악 클래스
  * @typedef {object} Music
+ * @property {stirng} Music.url
+ * @property {object} Music.info
+ * @property {string} Music.info.title
+ * @property {string} Music.info.description
+ * @property {string} Music.info.duration
+ * @property {string} Music.info.author
+ * @property {string} Music.info.url
+ * @property {string} Music.info.thumbnail
  */
 class Music {
     /**Music constructer
@@ -96,8 +104,13 @@ class Server {
             this.playing = null;
             this.next(message);
         }).on('error', e => {
-            console.log(e);
-            throw new Error('cannot play');
+            message.channel.send(new Discord.MessageEmbed({
+                title: '⚠ 오류 ⚠',
+                description: `${message.author}\n노래를 재생 하지 못했습니다.\n미안해요!`,
+                color: '#ff0000'
+            }));
+            this.playing = null;
+            this.next(message);
         });
 
         return this.playing;
@@ -188,6 +201,17 @@ class MusicManager {
         if (!this.servers[serverName]) {
             this.servers[serverName] = new Server;
         }
+    }
+
+    async join(message) {
+        /**@type {string}*/
+        const serverName = message.guild.name;
+        this.ServerCheck(serverName);
+
+        /**@type {Server} */
+        const server = this.servers[serverName];
+        
+        server.broadcast = await message.member.voice.channel.join();
     }
 
     /**재생
