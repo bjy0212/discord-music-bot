@@ -21,7 +21,7 @@ client.once('ready', () => {
 
 client.on('message', async (message) => {
     if (message.channel.type == 'dm') return;
-    if (!message.content.startsWith(process.env.PREFIX)) return;
+    if (!message.content.startsWith(process.env.COMMANDPREFIX)) return;
 
     const msg = message.content.substring(1).trim().replace(/[ ]+/g, ' ');
     const sender = message.author.username;
