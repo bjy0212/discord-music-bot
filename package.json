@@ -5,13 +5,16 @@
     "main": "bot.js",
     "scripts": {
         "start": "node bot >log.txt",
-        "debug": "node bot"
+        "debug": "node bot",
+        "setup-termux": "pkg update -y && pkg upgrade -y && pkg install -y nodejs python ffmpeg && npm install"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
     "dependencies": {
         "discord.js": "^12.5.3",
-        "dotenv": "^8.2.0"
+        "dotenv": "^8.2.0",
+        "music-manager": "file:custom_modules\\music-manager",
+        "@discordjs/opus": "^0.5.0"
     }
 }
