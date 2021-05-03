@@ -2,7 +2,7 @@
 const Discord = require('discord.js');
 require('dotenv').config();
 
-const MusicManager = require('./custom_modules/music-manager');
+const MusicManager = require('music-manager');
 //#endregion
 
 //#region client and global variables declaratoin
