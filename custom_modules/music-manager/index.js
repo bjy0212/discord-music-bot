@@ -33,12 +33,12 @@ async function newMusic(text, requester) {
         throw new Error('no-video');
     } else {
         return new Music({
-            title: result.videos[0].title,
-            description: result.videos[0].description,
+            title: result.videos[0].title.replace(/\"|\'|\`/g, ''),
+            description: result.videos[0].description.replace(/\"|\'|\`/g, ''),
             duration: toTime(result.videos[0].duration.seconds),
-            author: result.videos[0].author.name,
-            url: result.videos[0].url,
-            thumbnail: result.videos[0].thumbnail,
+            author: result.videos[0].author.name.replace(/\"|\'|\`/g, ''),
+            url: result.videos[0].url.replace(/\"|\'|\`/g, ''),
+            thumbnail: result.videos[0].thumbnail.replace(/\"|\'|\`/g, ''),
         }, requester);
     }
 }
@@ -97,7 +97,7 @@ class Server {
         if (this.playing !== null) {
             return false;
         }
-        this.playing = music; 
+        this.playing = music;
 
         this.stream = this.broadcast.play(
             ytdl(music.url, {
@@ -120,28 +120,39 @@ class Server {
         return this.playing;
     }
 
+    /**
+     * 
+     * @param {Discord.Message} message 
+     * @returns 
+     */
     next(message) {
         this.stream.destroy();
         this.stream = null;
         if (this.queue.length > 0 && this.playing === null) {
-            if(!this.play(this.queue[0], message)) {
+            if (!this.play(this.queue[0], message)) {
                 message.channel.send(new Discord.MessageEmbed({
                     title: '⚠ 오류 ⚠',
                     description: `${this.playing.author} 재생 실패`,
                     color: '#ff0000'
                 }));
-                
+
                 return true;
             }
 
             this.queue.splice(0, 1);
-
             message.channel.send(new Discord.MessageEmbed({
                 title: '🎶 곡 재생 🎶',
-                description: `${this.playing.requester}\n[${this.playing.info.title}](${this.playing.url})\n길이: ${this.playing.info.duration}\n게시자: ${this.playing.info.author}`,
+                description: `${String(this.playing.requester)}\n[${this.playing.info.title}](${this.playing.url})\n길이: ${this.playing.info.duration}\n게시자: ${this.playing.info.author}`,
                 image: { url: this.playing.info.thumbnail },
                 color: '#9400D3'
-            }));
+            })).catch(e => {
+                console.log(new Discord.MessageEmbed({
+                    title: '🎶 곡 재생 🎶',
+                    description: `${this.playing.requester}\n[${this.playing.info.title}](${this.playing.url})\n길이: ${this.playing.info.duration}\n게시자: ${this.playing.info.author}`,
+                    image: { url: this.playing.info.thumbnail },
+                    color: '#9400D3'
+                }));
+            });
 
             return this.playing;
         }
@@ -178,6 +189,7 @@ class Server {
     }
 
     np() {
+        if (this.playing === null || !this.broadcast) return false;
         return {
             time: toTime(this.broadcast.dispatcher.streamTime / 1000),
             music: this.playing
@@ -217,7 +229,7 @@ class MusicManager {
 
         /**@type {Server} */
         const server = this.servers[serverName];
-        
+
         server.broadcast = await message.member.voice.channel.join();
     }
 
@@ -300,8 +312,14 @@ class MusicManager {
         /**@type {Server} */
         const server = this.servers[serverName];
 
+        if (server.playing === null) return false;
+
         server.playing = null;
-        return server.next(message);
+        message.react('⏩');
+
+        server.next(message);
+
+        return true;
     }
 
     async view(message) {
