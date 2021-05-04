@@ -16,6 +16,7 @@ function three(n) {
 }
 
 function toTime(s) {
+    s = s | 0;
     let h, m;
     h = (s / 3600) | 0;
     s %= 3600;
@@ -25,7 +26,7 @@ function toTime(s) {
     return `${two(h)}:${two(m)}:${two(s)}`
 }
 
-async function newMusic(text) {
+async function newMusic(text, requester) {
     let result = await yts(text);
     // 결과 비디오가 없음
     if (result.videos.length === 0) {
@@ -38,13 +39,15 @@ async function newMusic(text) {
             author: result.videos[0].author.name,
             url: result.videos[0].url,
             thumbnail: result.videos[0].thumbnail,
-        });
+        }, requester);
     }
 }
 
 /**음악 클래스
  * @typedef {object} Music
  * @property {stirng} Music.url
+ * @property {string} Music.type 사클, 유튭 구분
+ * @property {string} Music.requester 요청자
  * @property {object} Music.info
  * @property {string} Music.info.title
  * @property {string} Music.info.description
@@ -57,7 +60,8 @@ class Music {
     /**Music constructer
      * @param {object} info
      */
-    constructor(info) {
+    constructor(info, requester) {
+        this.requester = requester;
         this.info = info
         this.url = info.url
     }
@@ -106,7 +110,7 @@ class Server {
         }).on('error', e => {
             message.channel.send(new Discord.MessageEmbed({
                 title: '⚠ 오류 ⚠',
-                description: `${message.author}\n노래를 재생 하지 못했습니다.\n미안해요!`,
+                description: `${this.playing.requester}\n노래를 재생 하지 못했습니다.\n미안해요!`,
                 color: '#ff0000'
             }));
             this.playing = null;
@@ -123,7 +127,7 @@ class Server {
             if(!this.play(this.queue[0], message)) {
                 message.channel.send(new Discord.MessageEmbed({
                     title: '⚠ 오류 ⚠',
-                    description: `${message.author} 재생 실패`,
+                    description: `${this.playing.author} 재생 실패`,
                     color: '#ff0000'
                 }));
                 
@@ -134,7 +138,7 @@ class Server {
 
             message.channel.send(new Discord.MessageEmbed({
                 title: '🎶 곡 재생 🎶',
-                description: `${message.author}\n[${this.playing.info.title}](${this.playing.url})\n길이: ${this.playing.info.duration}\n게시자: ${this.playing.info.author}`,
+                description: `${this.playing.requester}\n[${this.playing.info.title}](${this.playing.url})\n길이: ${this.playing.info.duration}\n게시자: ${this.playing.info.author}`,
                 image: { url: this.playing.info.thumbnail },
                 color: '#9400D3'
             }));
@@ -174,7 +178,10 @@ class Server {
     }
 
     np() {
-        return this.playing;
+        return {
+            time: toTime(this.broadcast.dispatcher.streamTime / 1000),
+            music: this.playing
+        };
     }
 }
 
@@ -227,7 +234,7 @@ class MusicManager {
         /**@type {Server} */
         const server = this.servers[serverName];
 
-        let music = await newMusic(msg.trim()).catch(e => {
+        let music = await newMusic(msg.trim(), message.author).catch(e => {
             throw new Error('no-video');
         });
 
@@ -256,7 +263,7 @@ class MusicManager {
         /**@type {Server} */
         const server = this.servers[serverName];
 
-        let music = await newMusic(msg.trim()).catch(e => {
+        let music = await newMusic(msg.trim(), message.author).catch(e => {
             throw new Error('no-video');
         });
 

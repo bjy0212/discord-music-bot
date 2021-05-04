@@ -42,7 +42,7 @@ client.on('message', async (message) => {
         case '들어와':
         case '와':
             await dj.join(message).then(r => {
-                
+
             }).catch(e => {
 
             });
@@ -98,15 +98,15 @@ client.on('message', async (message) => {
             });
 
             if (!r) message.channel.send(new Discord.MessageEmbed({
-                    title: '⚠ 오류 ⚠',
-                    description: `${message.author} 해당하는 곡을 삭제 할 수 없습니다.`,
-                    color: '#ff0000'
-                }));
+                title: '⚠ 오류 ⚠',
+                description: `${message.author} 해당하는 곡을 삭제 할 수 없습니다.`,
+                color: '#ff0000'
+            }));
             else message.channel.send(new Discord.MessageEmbed({
-                    title: '🗑 곡 삭제 🗑',
-                    description: `${message.author}\n\`${r.info.title}\` 제거`,
-                    color: '#9400D3'
-                }));
+                title: '🗑 곡 삭제 🗑',
+                description: `${message.author}\n\`${r.info.title}\` 제거`,
+                color: '#9400D3'
+            }));
             break;
 
         case '추가':
@@ -173,13 +173,17 @@ client.on('message', async (message) => {
         case 'nowplaying':
         case 'now':
             r = await dj.np(message);
-            if (!r || !r.info) message.channel.send(`⚠ ${message.author} 노래를 재생 하고 있지 않습니다. ⚠`);
+            if (!r || !r.music.info) message.channel.send(new Discord.MessageEmbed({
+                    title: '⚠ 오류 ⚠',
+                    description: `${message.author} 재생 중이 아닙니다.`,
+                    color: '#ff0000'
+                }));
             else message.channel.send(new Discord.MessageEmbed({
-                title: '🎶 재생 중 🎶',
-                description: `${message.author}\n[${r.info.title}](${r.url})\n길이: ${r.info.duration}\n게시자: ${r.info.author}`,
-                image: { url: r.info.thumbnail },
-                color: '#9400D3'
-            }))
+                    title: '🎶 재생 중 🎶',
+                    description: `${r.music.requester}\n[${r.music.info.title}](${r.music.url})\n재생: ${r.time}/${r.music.info.duration}\n게시자: ${r.music.info.author}`,
+                    image: { url: r.music.info.thumbnail },
+                    color: '#9400D3'
+                }));
             break;
 
         case 'stop':
