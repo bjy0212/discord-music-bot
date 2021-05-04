@@ -60,10 +60,12 @@ client.on('message', async (message) => {
                 }));
             });
 
+            if (!r) break;
+
             if (r.add) {
                 message.channel.send(new Discord.MessageEmbed({
                     title: '🎶 곡 추가 🎶',
-                    description: `${message.author}\n대기열: ${r.index}\n제목: [${r.music.info.title}](${r.music.url})\n길이: ${r.music.info.duration}\n게시자: ${r.music.info.author}`,
+                    description: `${r.music.requester}\n대기열: ${r.index}\n제목: [${r.music.info.title}](${r.music.url})\n길이: ${r.music.info.duration}\n게시자: ${r.music.info.author}`,
                     image: { url: r.music.info.thumbnail },
                     color: '#9400D3'
                 }));
@@ -76,7 +78,7 @@ client.on('message', async (message) => {
             } else {
                 message.channel.send(new Discord.MessageEmbed({
                     title: '🎶 곡 재생 🎶',
-                    description: `${message.author}\n[${r.info.title}](${r.url})\n길이: ${r.info.duration}\n게시자: ${r.info.author}`,
+                    description: `${r.requester}\n[${r.info.title}](${r.url})\n길이: ${r.info.duration}\n게시자: ${r.info.author}`,
                     image: { url: r.info.thumbnail },
                     color: '#9400D3'
                 }));
@@ -142,16 +144,34 @@ client.on('message', async (message) => {
         case '스킵':
         case 'skip':
         case 's':
-            r = await dj.skip(message);
-            if (r) {
-                // none
-            } else {
-                message.channel.send(new Discord.MessageEmbed({
-                    title: '⚠ 오류 ⚠',
-                    description: `${message.author} 다음 곡이 없습니다.`,
-                    color: '#ff0000'
-                }));
-            }
+            dj.skip(message);
+            break;
+
+        case 'test':
+            message.channel.send(new Discord.MessageEmbed({
+                type: 'rich',
+                title: '🎶 곡 재생 🎶',
+                description: '<@717419863177691267>\n' +
+                  '[Ep 4. TWICE is TWICE | TWICE: Seize the Light](https://youtube.com/watch?v=rFxaGZ9xMPg)\n' +
+                  '길이: 00:17:03\n' +
+                  '게시자: TWICE',
+                url: null,
+                color: 9699539,
+                timestamp: null,
+                fields: [],
+                thumbnail: null,
+                image: {
+                  url: 'https://i.ytimg.com/vi/rFxaGZ9xMPg/hq720.jpg',
+                  proxyURL: undefined,
+                  height: undefined,
+                  width: undefined
+                },
+                video: null,
+                author: null,
+                provider: null,
+                footer: null,
+                files: []
+              }));
             break;
 
         case '목록':
@@ -174,7 +194,7 @@ client.on('message', async (message) => {
         case 'now':
             r = await dj.np(message);
             if (!r || !r.music.info) message.channel.send(new Discord.MessageEmbed({
-                    title: '⚠ 오류 ⚠',
+                    title: '🤔 흐으음... 🤔',
                     description: `${message.author} 재생 중이 아닙니다.`,
                     color: '#ff0000'
                 }));
