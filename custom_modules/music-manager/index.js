@@ -102,7 +102,8 @@ class Server {
         this.stream = this.broadcast.play(
             ytdl(music.url, {
                 quality: 'highestaudio',
-                highWaterMark: 1024 * 1024 * 20
+                highWaterMark: 1024 * 1024 * 20,
+                retries: 5
             })
         ).on('finish', () => {
             this.playing = null;
@@ -256,11 +257,16 @@ class MusicManager {
                 server.broadcast = await message.member.voice.channel.join();
             } catch (e) {
                 console.error(e);
+                message.channel.send(new Discord.MessageEmbed({
+                    title: '🤔 흐으음 🤔',
+                    description: '보이스 채널에 들어가 있지 않아요.',
+                    color: '#ff0000'
+                }));
                 return false;
             }
         }
 
-        if (!server.play(music, message)) {
+        if (server.broadcast !== null && !server.play(music, message)) {
             return server.add(music);
         }
 
