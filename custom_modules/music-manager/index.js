@@ -147,16 +147,20 @@ class Server {
                 image: { url: this.playing.info.thumbnail },
                 color: '#9400D3'
             })).catch(e => {
-                console.log(new Discord.MessageEmbed({
-                    title: '🎶 곡 재생 🎶',
-                    description: `${this.playing.requester}\n[${this.playing.info.title}](${this.playing.url})\n길이: ${this.playing.info.duration}\n게시자: ${this.playing.info.author}`,
-                    image: { url: this.playing.info.thumbnail },
-                    color: '#9400D3'
-                }));
+                console.error(e);
             });
 
             return this.playing;
         }
+
+        message.channel.send(new Discord.MessageEmbed({
+            title: '🐕 퇴근합니당 🐈',
+            description: '목록에 남은 노래가 없어요!',
+            color: '#9400D3'
+        }));
+
+        this.broadcast.disconnect();
+        this.broadcast = null;
 
         return false;
     }
