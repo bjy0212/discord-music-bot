@@ -102,7 +102,8 @@ class Server {
         this.stream = this.broadcast.play(
             ytdl(music.url, {
                 quality: 'highestaudio',
-                highWaterMark: 1024 * 1024 * 20
+                highWaterMark: 1024 * 1024 * 20,
+                retries: 5
             })
         ).on('finish', () => {
             this.playing = null;
