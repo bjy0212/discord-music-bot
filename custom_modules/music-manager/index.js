@@ -127,6 +127,16 @@ class Server {
      * @returns 
      */
     next(message) {
+        // force gc
+        try {
+            if (global.gc) {
+                global.gc();
+            }
+        } catch (e) {
+            console.log("`node --expose-gc index.js`");
+            process.exit();
+        }
+
         this.stream.destroy();
         this.stream = null;
         if (this.queue.length > 0 && this.playing === null) {

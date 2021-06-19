@@ -212,16 +212,6 @@ client.on('message', async (message) => {
             // 미완
             break;
     }
-
-    // force gc
-    try {
-        if (global.gc) {
-            global.gc();
-        }
-    } catch (e) {
-        console.log("`node --expose-gc index.js`");
-        process.exit();
-    }
 });
 
 client.login(process.env.TOKEN);
