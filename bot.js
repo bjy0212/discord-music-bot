@@ -211,19 +211,6 @@ client.on('message', async (message) => {
         case '정지':
             // 미완
             break;
-
-        default:
-            return;
-    }
-
-    // force gc
-    try {
-        if (global.gc) {
-            global.gc();
-        }
-    } catch (e) {
-        console.log("`node --expose-gc index.js`");
-        process.exit();
     }
 });
 
