@@ -211,6 +211,9 @@ client.on('message', async (message) => {
         case '정지':
             // 미완
             break;
+
+        default:
+            return;
     }
 
     // force gc
