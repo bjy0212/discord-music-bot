@@ -4,7 +4,7 @@
     "description": "",
     "main": "bot.js",
     "scripts": {
-        "start": "node bot >log.txt",
+        "start": "node --expose-gc bot",
         "debug": "node bot",
         "setup-termux": "pkg update -y && pkg upgrade -y && pkg install -y nodejs python ffmpeg && npm install && echo \"TOKEN=\nCOMMANDPREFIX=\">.env && echo \"setup is done! change .env file to you own settings\""
     },
