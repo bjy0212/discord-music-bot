@@ -152,26 +152,26 @@ client.on('message', async (message) => {
                 type: 'rich',
                 title: '🎶 곡 재생 🎶',
                 description: '<@717419863177691267>\n' +
-                  '[Ep 4. TWICE is TWICE | TWICE: Seize the Light](https://youtube.com/watch?v=rFxaGZ9xMPg)\n' +
-                  '길이: 00:17:03\n' +
-                  '게시자: TWICE',
+                    '[Ep 4. TWICE is TWICE | TWICE: Seize the Light](https://youtube.com/watch?v=rFxaGZ9xMPg)\n' +
+                    '길이: 00:17:03\n' +
+                    '게시자: TWICE',
                 url: null,
                 color: 9699539,
                 timestamp: null,
                 fields: [],
                 thumbnail: null,
                 image: {
-                  url: 'https://i.ytimg.com/vi/rFxaGZ9xMPg/hq720.jpg',
-                  proxyURL: undefined,
-                  height: undefined,
-                  width: undefined
+                    url: 'https://i.ytimg.com/vi/rFxaGZ9xMPg/hq720.jpg',
+                    proxyURL: undefined,
+                    height: undefined,
+                    width: undefined
                 },
                 video: null,
                 author: null,
                 provider: null,
                 footer: null,
                 files: []
-              }));
+            }));
             break;
 
         case '목록':
@@ -194,16 +194,16 @@ client.on('message', async (message) => {
         case 'now':
             r = await dj.np(message);
             if (!r || !r.music.info) message.channel.send(new Discord.MessageEmbed({
-                    title: '🤔 흐으음... 🤔',
-                    description: `${message.author} 재생 중이 아닙니다.`,
-                    color: '#ff0000'
-                }));
+                title: '🤔 흐으음... 🤔',
+                description: `${message.author} 재생 중이 아닙니다.`,
+                color: '#ff0000'
+            }));
             else message.channel.send(new Discord.MessageEmbed({
-                    title: '🎶 재생 중 🎶',
-                    description: `${r.music.requester}\n[${r.music.info.title}](${r.music.url})\n재생: ${r.time}/${r.music.info.duration}\n게시자: ${r.music.info.author}`,
-                    image: { url: r.music.info.thumbnail },
-                    color: '#9400D3'
-                }));
+                title: '🎶 재생 중 🎶',
+                description: `${r.music.requester}\n[${r.music.info.title}](${r.music.url})\n재생: ${r.time}/${r.music.info.duration}\n게시자: ${r.music.info.author}`,
+                image: { url: r.music.info.thumbnail },
+                color: '#9400D3'
+            }));
             break;
 
         case 'stop':
@@ -211,6 +211,16 @@ client.on('message', async (message) => {
         case '정지':
             // 미완
             break;
+    }
+
+    // force gc
+    try {
+        if (global.gc) {
+            global.gc();
+        }
+    } catch (e) {
+        console.log("`node --expose-gc index.js`");
+        process.exit();
     }
 });
 
