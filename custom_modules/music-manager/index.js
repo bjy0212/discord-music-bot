@@ -116,6 +116,7 @@ class Server {
             }));
             this.playing = null;
             this.next(message);
+            console.log(e);
         });
 
         return this.playing;
